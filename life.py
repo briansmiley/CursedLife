@@ -110,16 +110,11 @@ def drawGrid(grid,window):
     
 def main(scr):
     h,w = 50,100
-    if args.speed:
-        speed = args.speed
-    else:
-        speed = 50
     currentFrame = np.zeros((h,w),dtype=int)
 
     # draw a blank grid
     scr.clear()
     win = curses.newwin(h,w,1,1)
-    print(args)
     ##Sandbox adding stuff to the grid
     if args.gliders:
         drawGlider(currentFrame,[2,2],1)
@@ -141,12 +136,12 @@ def main(scr):
         drawGrid(currentFrame,win)
         win.refresh()
 
-        curses.napms(speed)
+        curses.napms(args.speed)
         # win.getch()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate a Game of Life Grid", formatter_class=argparse.MetavarTypeHelpFormatter)
-    parser.add_argument('--speed', '-s', dest='speed', type = int, help = 'set frame refresh rate in ms')
+    parser.add_argument('--speed', '-s', dest='speed', type = int, default = 75, help = 'set frame refresh rate in ms (default 75)')
     demoGroup = parser.add_mutually_exclusive_group()
     demoGroup.add_argument('--random', '-r', dest='random', type = float, help = "set a proportion of the grid to randomly activate")
     demoGroup.add_argument('--gliders', '-g', dest='gliders', action = 'store_true', help = 'generate some gliders at hard coded positions')
