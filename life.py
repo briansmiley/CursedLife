@@ -114,12 +114,15 @@ def drawGrid(grid,window):
     if grid.shape != window.getmaxyx():
         quit()
     h,w = grid.shape
-    for y in range(h-1):
-        for x in range(w-1):
+    for y in range(h):
+        for x in range(w):
             #  "#" if cell is 1, "·" if cell is 0
             
             char = ['·','#'][grid[y][x]]
-            window.addch(y,x,char)
+            try:
+                window.addch(y,x,char)
+            except:
+                pass
     
 def main(scr):
     h,w = tuple(args.dimensions)
