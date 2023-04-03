@@ -30,9 +30,17 @@ def neighbors(grid,y,x):
         exceptions.extend([5,6,7])
     if x == w-1:
         exceptions.extend([2,4,7])
-    for idx, coord in enumerate(potential_neighbors):
-        if idx not in exceptions:
-            ret.append(coord)
+
+    #if wrapping, replace -1s with ends and ends+1 with 0
+    if args.wrap:
+        potential_neighbors = [[cell[0] % h, cell[1] % w] for cell in potential_neighbors]
+        return potential_neighbors
+    else:
+        for idx, coord in enumerate(potential_neighbors):
+            if idx not in exceptions:
+                ret.append(coord)
+
+    
     return ret
     
 #count active neighbors of a cell
@@ -58,6 +66,12 @@ def life(grid, y,x):
 #    ###  ###  ·#·  ·#·
 def drawGlider(grid,coord,direction = 1):
     y,x = coord[0], coord[1]
+    h,w = grid.shape
+
+    #stop if the glider is being drawn outside the grid
+    if y >= h or x >= w:
+        return
+    
     if direction == 1:
         for pair in [[y,x+1],[y+1,x+2],[y+2,x],[y+2,x+1],[y+2,x+2]]:
             grid[pair[0]][pair[1]]=1
@@ -108,12 +122,12 @@ def drawGrid(grid,window):
             window.addch(y,x,char)
     
 def main(scr):
-    h,w = 50,100
+    h,w = tuple(args.dimensions)
     currentFrame = np.zeros((h,w),dtype=int)
 
     # draw a blank grid
     scr.clear()
-    win = curses.newwin(h,w,1,1)
+    win = curses.newwin(h,w,10,10)
     ##Sandbox adding stuff to the grid
     if args.gliders:
         drawGlider(currentFrame,[2,2],1)
@@ -140,7 +154,9 @@ def main(scr):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate a Game of Life Grid", formatter_class=argparse.MetavarTypeHelpFormatter)
-    parser.add_argument('--speed', '-s', dest='speed', type = int, default = 75, help = 'set frame refresh rate in ms (default 75)')
+    parser.add_argument('--speed', '-s', dest = 'speed', type = int, default = 75, help = 'set frame refresh rate in ms (default 75)')
+    parser.add_argument("--wrap", "-w", dest = "wrap", action = 'store_true', help = "'wrap' the grid such that cells at the border consider the opposite border adjacent to them; e.g. gliders cross from the bottom of the grid to the top")
+    parser.add_argument("--dimensions", "-d", dest = "dimensions", default = [50,100],type = int, nargs = 2, help = "set the dimensions (height width) of the grid (defaults to 50 x 100)")
     demoGroup = parser.add_mutually_exclusive_group()
     demoGroup.add_argument('--random', '-r', dest='random', type = float, help = "set a proportion of the grid to randomly activate")
     demoGroup.add_argument('--gliders', '-g', dest='gliders', action = 'store_true', help = 'generate some gliders at hard coded positions')
