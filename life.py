@@ -69,7 +69,7 @@ def drawGlider(grid,coord,direction = 1):
     h,w = grid.shape
 
     #stop if the glider is being drawn outside the grid
-    if y >= h or x >= w:
+    if y >= h-2 or x >= w-2:
         return
     
     if direction == 1:
