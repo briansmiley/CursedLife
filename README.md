@@ -6,9 +6,9 @@ Currently includes functions to draw a random grid of active cells, and a drawGl
 
 Command line arguments:
 
-    --glider -g: places some gliders in hard coded positions
-    --random -r [float]: initializes the grid with [float] proportion of cells randomly active
-    --speed -s [int]: sets refresh rate to [int]ms (default 75ms)
+    --glider, -g: places some gliders in hard coded positions
+    --random, -r [float]: initializes the grid with [float] proportion of cells randomly active
+    --speed, -s [int]: sets refresh rate to [int]ms (default 75ms)
 
 
 https://user-images.githubusercontent.com/34353764/229634872-6017fcfb-9bdc-4548-836f-b8cb868a6a1c.mov
