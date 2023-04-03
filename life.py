@@ -119,6 +119,7 @@ def drawGrid(grid,window):
             #  "#" if cell is 1, "·" if cell is 0
             
             char = ['·','#'][grid[y][x]]
+            #curses throws an error when we write the last character, we can ignore it
             try:
                 window.addch(y,x,char)
             except:
@@ -148,6 +149,9 @@ def main(scr):
     win.refresh()
 
     while True:
+        #hide the cursor while game is playing
+        curses.curs_set(0)
+
         currentFrame = generate_next_grid(currentFrame)
         drawGrid(currentFrame,win)
         win.refresh()
@@ -160,6 +164,7 @@ if __name__ == "__main__":
     parser.add_argument('--speed', '-s', dest = 'speed', type = int, default = 75, help = 'set frame refresh rate in ms (default 75)')
     parser.add_argument("--wrap", "-w", dest = "wrap", action = 'store_true', help = "'wrap' the grid such that cells at the border consider the opposite border adjacent to them; e.g. gliders cross from the bottom of the grid to the top")
     parser.add_argument("--dimensions", "-d", dest = "dimensions", default = [50,100],type = int, nargs = 2, help = "set the dimensions (height width) of the grid (defaults to 50 x 100)")
+    
     demoGroup = parser.add_mutually_exclusive_group()
     demoGroup.add_argument('--random', '-r', dest='random', type = float, help = "set a proportion of the grid to randomly activate")
     demoGroup.add_argument('--gliders', '-g', dest='gliders', action = 'store_true', help = 'generate some gliders at hard coded positions')
