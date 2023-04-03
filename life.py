@@ -3,7 +3,8 @@ from curses import wrapper
 import time
 import numpy as np
 import random
-
+import sys
+import argparse
 
 
 #get list of the valid neighbors of a cell (i.e. not outside grid)
@@ -83,7 +84,7 @@ def setCell(grid, coord, on = True):
     grid[coord[0]][coord[1]] = [0,1][on]
                 
 #set arbitrary list of cells to 1
-def drawCells(grid, coordinates):
+def setCells(grid, coordinates):
     for coord in coordinates:
         setCell(grid,coord)
 
@@ -109,22 +110,27 @@ def drawGrid(grid,window):
     
 def main(scr):
     h,w = 50,100
-
+    if args.speed:
+        speed = args.speed
+    else:
+        speed = 50
     currentFrame = np.zeros((h,w),dtype=int)
 
     # draw a blank grid
     scr.clear()
     win = curses.newwin(h,w,1,1)
-
+    print(args)
     ##Sandbox adding stuff to the grid
-    # drawGlider(currentFrame,[2,2],1)
-    # drawGlider(currentFrame,[20,10])
-    # drawGlider(currentFrame,[25,34],4)
-    # drawGlider(currentFrame,[15,79])
-    # drawGlider(currentFrame,[5,80],2)
-    # drawGlider(currentFrame,[1,50])
+    if args.gliders:
+        drawGlider(currentFrame,[2,2],1)
+        drawGlider(currentFrame,[20,10])
+        drawGlider(currentFrame,[25,34],4)
+        drawGlider(currentFrame,[15,79])
+        drawGlider(currentFrame,[5,80],2)
+        drawGlider(currentFrame,[1,50])
 
-    drawNoise(currentFrame)
+    if args.random:
+        drawNoise(currentFrame, args.random)
     ## /Sandbox
 
     drawGrid(currentFrame, win)
@@ -135,8 +141,14 @@ def main(scr):
         drawGrid(currentFrame,win)
         win.refresh()
 
-        curses.napms(75)
+        curses.napms(speed)
         # win.getch()
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate a Game of Life Grid", formatter_class=argparse.MetavarTypeHelpFormatter)
+    parser.add_argument('--speed', '-s', dest='speed', type = int, help = 'set frame refresh rate in ms')
+    demoGroup = parser.add_mutually_exclusive_group()
+    demoGroup.add_argument('--random', '-r', dest='random', type = float, help = "set a proportion of the grid to randomly activate")
+    demoGroup.add_argument('--gliders', '-g', dest='gliders', action = 'store_true', help = 'generate some gliders at hard coded positions')
+    args = parser.parse_args()
     wrapper(main)
