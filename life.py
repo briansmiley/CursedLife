@@ -2,6 +2,7 @@ import curses
 from curses import wrapper
 import time
 import numpy as np
+import random
 
 
 
@@ -54,7 +55,8 @@ def life(grid, y,x):
 #-->1·#· 2·#· 3### 4###
 #    ··#  #··  #··  ··#
 #    ###  ###  ·#·  ·#·
-def drawGlider(grid,y,x,direction = 1):
+def drawGlider(grid,coord,direction = 1):
+    y,x = coord[0], coord[1]
     if direction == 1:
         for pair in [[y,x+1],[y+1,x+2],[y+2,x],[y+2,x+1],[y+2,x+2]]:
             grid[pair[0]][pair[1]]=1
@@ -68,10 +70,22 @@ def drawGlider(grid,y,x,direction = 1):
         for pair in [[y,x],[y,x+1],[y,x+2],[y+1,x+2],[y+2,x+1]]:
             grid[pair[0]][pair[1]]=1
 
+#sets random cells all across the grid to positive, "density" sets the proportion of activated cells
+def drawNoise(grid,density = .5):
+    h,w = grid.shape
+    for y in range(h):
+        for x in range(w):
+            if random.random() < density:
+                setCell(grid,[y,x])
+
+#Set a particular coordinate in the grid, default behavior to set to on
+def setCell(grid, coord, on = True):
+    grid[coord[0]][coord[1]] = [0,1][on]
+                
 #set arbitrary list of cells to 1
 def drawCells(grid, coordinates):
     for coord in coordinates:
-        grid[coord[0]][coord[1]] = 1
+        setCell(grid,coord)
 
 def generate_next_grid(frame):
     nextFrame = np.empty_like(frame)
@@ -103,12 +117,14 @@ def main(scr):
     win = curses.newwin(h,w,1,1)
 
     ##Sandbox adding stuff to the grid
-    drawGlider(currentFrame,2,2,1)
-    drawGlider(currentFrame,20,10)
-    drawGlider(currentFrame,25,34,4)
-    drawGlider(currentFrame,15,79)
-    drawGlider(currentFrame,5,80,2)
-    drawGlider(currentFrame,1,50)
+    # drawGlider(currentFrame,[2,2],1)
+    # drawGlider(currentFrame,[20,10])
+    # drawGlider(currentFrame,[25,34],4)
+    # drawGlider(currentFrame,[15,79])
+    # drawGlider(currentFrame,[5,80],2)
+    # drawGlider(currentFrame,[1,50])
+
+    drawNoise(currentFrame)
     ## /Sandbox
 
     drawGrid(currentFrame, win)
