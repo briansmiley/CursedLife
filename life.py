@@ -50,13 +50,23 @@ def life(grid, y,x):
         return grid[y][x]
     return 0
 
-#places a glider in the 3x3 area cornered on y,x 
-#-->·#·
-#   ··#
-#   ###
-def drawGlider(grid,y,x):
-    for pair in [[y,x+1],[y+1,x+2],[y+2,x],[y+2,x+1],[y+2,x+2]]:
-        grid[pair[0]][pair[1]]=1
+#places a glider in the 3x3 area cornered on y,x, 1 goes SE, 2 3 4 go progressively CW
+#-->1·#· 2·#· 3### 4###
+#    ··#  #··  #··  ··#
+#    ###  ###  ·#·  ·#·
+def drawGlider(grid,y,x,direction = 1):
+    if direction == 1:
+        for pair in [[y,x+1],[y+1,x+2],[y+2,x],[y+2,x+1],[y+2,x+2]]:
+            grid[pair[0]][pair[1]]=1
+    if direction == 2:
+        for pair in [[y,x+1],[y+1,x],[y+2,x],[y+2,x+1],[y+2,x+2]]:
+            grid[pair[0]][pair[1]]=1
+    if direction == 3:
+        for pair in [[y,x],[y,x+1],[y,x+2],[y+1,x],[y+2,x+1]]:
+            grid[pair[0]][pair[1]]=1
+    if direction == 4:
+        for pair in [[y,x],[y,x+1],[y,x+2],[y+1,x+2],[y+2,x+1]]:
+            grid[pair[0]][pair[1]]=1
 
 #set arbitrary list of cells to 1
 def drawCells(grid, coordinates):
@@ -91,9 +101,16 @@ def main(scr):
     # draw a blank grid
     scr.clear()
     win = curses.newwin(h,w,1,1)
-    drawGlider(currentFrame,2,2)
+
+    ##Sandbox adding stuff to the grid
+    drawGlider(currentFrame,2,2,1)
     drawGlider(currentFrame,20,10)
-    drawGlider(currentFrame,25,34)
+    drawGlider(currentFrame,25,34,4)
+    drawGlider(currentFrame,15,79)
+    drawGlider(currentFrame,5,80,2)
+    drawGlider(currentFrame,1,50)
+    ## /Sandbox
+
     drawGrid(currentFrame, win)
     win.refresh()
 
@@ -102,7 +119,7 @@ def main(scr):
         drawGrid(currentFrame,win)
         win.refresh()
 
-        curses.napms(50)
+        curses.napms(75)
         # win.getch()
 
 if __name__ == "__main__":
