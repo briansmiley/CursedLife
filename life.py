@@ -45,10 +45,10 @@ def liveNeighbors(grid,y,x):
 def life(grid, y,x):
     n = liveNeighbors(grid,y,x)
     if n == 3:
-        return True
+        return 1
     if n == 2:
         return grid[y][x]
-    return False
+    return 0
 
 #places a glider in the 3x3 area cornered on y,x 
 #-->·#·
@@ -56,12 +56,12 @@ def life(grid, y,x):
 #   ###
 def drawGlider(grid,y,x):
     for pair in [[y,x+1],[y+1,x+2],[y+2,x],[y+2,x+1],[y+2,x+2]]:
-        grid[pair[0]][pair[1]]=True
+        grid[pair[0]][pair[1]]=1
 
-#set arbitrary list of cells to True
+#set arbitrary list of cells to 1
 def drawCells(grid, coordinates):
     for coord in coordinates:
-        grid[coord[0]][coord[1]] = True
+        grid[coord[0]][coord[1]] = 1
 
 def generate_next_grid(frame):
     nextFrame = np.empty_like(frame)
@@ -78,19 +78,22 @@ def drawGrid(grid,window):
     h,w = grid.shape
     for y in range(h-1):
         for x in range(w-1):
-            #  "#" if cell is true, "·" if cell is false
-            char = char = ['·','#'][grid[y][x]]
+            #  "#" if cell is 1, "·" if cell is 0
+            
+            char = ['·','#'][grid[y][x]]
             window.addch(y,x,char)
     
 def main(scr):
-    w,h = 100,50
+    h,w = 50,100
 
-    currentFrame = np.empty((h,w),dtype=bool)
+    currentFrame = np.zeros((h,w),dtype=int)
 
     # draw a blank grid
     scr.clear()
     win = curses.newwin(h,w,1,1)
     drawGlider(currentFrame,2,2)
+    drawGlider(currentFrame,20,10)
+    drawGlider(currentFrame,25,34)
     drawGrid(currentFrame, win)
     win.refresh()
 
@@ -98,6 +101,9 @@ def main(scr):
         currentFrame = generate_next_grid(currentFrame)
         drawGrid(currentFrame,win)
         win.refresh()
-        win.getch()
+
+        curses.napms(50)
+        # win.getch()
+
 if __name__ == "__main__":
     wrapper(main)
