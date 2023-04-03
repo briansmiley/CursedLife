@@ -98,8 +98,7 @@ def generate_next_grid(frame):
 #takes a boolean life grid and writes it to a window
 def drawGrid(grid,window):
     if grid.shape != window.getmaxyx():
-        print("Can't draw grid on missized window")
-        return
+        quit()
     h,w = grid.shape
     for y in range(h-1):
         for x in range(w-1):
