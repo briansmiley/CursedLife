@@ -3,8 +3,7 @@ from curses import wrapper
 import time
 import numpy as np
 
-w,h = 100,50
-currentFrame = np.array(h * [w * [False]])
+
 
 #get list of the valid neighbors of a cell (i.e. not outside grid)
 def neighbors(grid,y,x):
@@ -56,22 +55,34 @@ def generate_next_grid(frame):
     for y,row in enumerate(frame):
         for x,cell in row:
             nextFrame[y][x] = life(frame,y,x)
+
+#takes a boolean life grid and writes it to a window
+def drawGrid(grid,window):
+    if grid.shape != window.getmaxyx():
+        print("Can't draw grid on missized window")
+        return
+    h,w = grid.shape
+    for y in range(h-1):
+        for x in range(w-1):
+            #  "#" if cell is true, "·" if cell is false
+            char = char = ['·','#'][grid[y][x]]
+            window.addch(y,x,char)
     
+def main(scr):
+    w,h = 100,50
+    currentFrame = np.empty((h,w),dtype=bool)
 
-    
-def main():
-
-    #draw a blank grid
-    # scr.clear()
-    # win = curses.newwin(h,w,1,1)
-    # for y in range(h-1):
-    #     for x in range(w - 1):
-    #         char = ['·','#'][grid[y][x]]
-    #         win.addch(y, x, char)
-    # win.refresh()
+    # draw a blank grid
+    scr.clear()
+    win = curses.newwin(h,w,1,1)
+    for y in range(h-1):
+        for x in range(w - 1):
+            char = ['·','#'][[y][x]]
+            win.addch(y, x, char)
+    win.refresh()
 
 
-    # win.getkey()
+    win.getkey()
 
 if __name__ == "__main__":
-    main()
+    wrapper(main())
