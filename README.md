@@ -11,6 +11,7 @@ Command line arguments:
     --speed, -s [int]: sets refresh rate to [int]ms (default 75ms)
     --dimensions, -d [int] [int]: sets the height and width of the display grid; defaults to 50 x 100
     --wrap, -w: turns on edge-wrapping, so that cells on the border consider those on the opposite their neighbors
+    --stepwise: makes the grid update only when on keypress (causes --speed to be ignored)
 
 
 https://user-images.githubusercontent.com/34353764/229634872-6017fcfb-9bdc-4548-836f-b8cb868a6a1c.mov
