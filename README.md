@@ -1,6 +1,6 @@
 ## Cursed Life
 
-This is a basic exercise in the Curses Python module, implementing Conway's Game of Life in a console display format.
+This is a basic exercise in the [Curses](https://docs.python.org/3/howto/curses.html) Python module, implementing Conway's Game of Life in a console display format.
 
 Currently includes functions to draw a random grid of active cells, and a drawGlider function with 4 direction options!
 
