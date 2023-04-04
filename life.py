@@ -131,7 +131,7 @@ def main(scr):
 
     # draw a blank grid
     scr.clear()
-    win = curses.newwin(h,w,10,10)
+    win = curses.newwin(h,w,1,1)
     ##Sandbox adding stuff to the grid
     if args.gliders:
         drawGlider(currentFrame,[2,2],1)
