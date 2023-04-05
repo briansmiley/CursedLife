@@ -95,6 +95,7 @@ def drawNoise(grid,density = .5):
 #Set a particular coordinate in the grid, default behavior to set to on
 def setCell(grid, coord, on = True):
     grid[coord[0]][coord[1]] = [0,1][on]
+
                 
 #set arbitrary list of cells to 1
 def setCells(grid, coordinates):
@@ -128,37 +129,59 @@ def consoleWrite(win, text):
     win.addstr(text)
     win.refresh()
 def editGrid(grid, win):
-    y,x = grid.shape[0]//2,grid.shape[1]//2
+    h,w = grid.shape
+    y,x = h//2, w//2
+
+    #"Console" window for displaying current Y, X coordinates of drawing cursor
     console = curses.newwin(1,50,grid.shape[0]+2,0)
-    console2 = curses.newwin(1,50,grid.shape[0]+3,0)
+
+    #Secondary console window for debug, displays last pressed key
+    # console2 = curses.newwin(2,50,grid.shape[0]+3,0)
+    
     while True:
-        consoleWrite(console, f"Console: Y: {y}, X: {x}")
+        #Prevent walking outside the grid
+        if y >= h:
+            y = h - 1
+        if y <= 0:
+            y = 0
+        if x >= w:
+            x = w - 1
+        if x <= 0:
+            x = 0
+
+        consoleWrite(console, f"Y: {y}, X: {x}")
         drawGrid(grid, win)
         win.move(y, x)
         win.refresh()
 
-        key = win.getch()
+        key = win.getkey()
 
-        #For testing what key is being seen
-        consoleWrite(console2, f"{key}")
+        #Display pressed key
+        #consoleWrite(console2, f"{key}")
 
         #Move cursor x/y on arrow keys
-        if key == curses.KEY_LEFT:
+        if key == "KEY_LEFT":
             x -= 1
-        elif key == curses.KEY_RIGHT:
+        elif key == "KEY_RIGHT":
             x += 1
-        elif key == curses.KEY_UP:
+        elif key == "KEY_UP":
             y -= 1
-        elif key == curses.KEY_DOWN:
+        elif key == "KEY_DOWN":
             y += 1
 
         #Place a live cell on spacebar
-        elif key == ord(" "):
-            grid[y,x] = 1
+        elif key == " ":
+            setCell(grid, [y,x], not(grid[y,x]))
 
         #Stop drawing on enter
-        elif key == curses.KEY_ENTER:
+        elif key == "\n":
             break
+
+    #close console/coordinate display when done drawing
+    console.clear()
+    console.refresh()
+    #console2.clear()
+    #console2.refresh()
 
 def main(scr):
     h,w = tuple(args.dimensions)
