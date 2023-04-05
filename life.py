@@ -3,7 +3,6 @@ from curses import wrapper
 import time
 import numpy as np
 import random
-import sys
 import argparse
 
 
@@ -152,25 +151,36 @@ def main(scr):
         #hide the cursor while game is playing
         curses.curs_set(0)
 
-        currentFrame = generate_next_grid(currentFrame)
+        #Draw the current frame on the screen
         drawGrid(currentFrame,win)
         win.refresh()
 
+        #Update the frame array one step
+        currentFrame = generate_next_grid(currentFrame)
+
+        #If in stepwise mode, wait for keypress
         if args.step:
             win.getkey()
             curses.napms(args.speed)
+
+            #Avoids "buffering" inputs when in stepwise mode
             curses.flushinp()
         else:
+            #If not in stepwise mode, wait [speed] ms before iterating
             curses.napms(args.speed)
 
 if __name__ == "__main__":
+
+    #Command line argument parsing
     parser = argparse.ArgumentParser(description="Generate a Game of Life Grid", formatter_class=argparse.MetavarTypeHelpFormatter)
     parser.add_argument('--speed', '-s', dest = 'speed', type = int, default = 75, help = 'set frame refresh rate in ms (default 75)')
     parser.add_argument("--wrap", "-w", dest = "wrap", action = 'store_true', help = "'wrap' the grid such that cells at the border consider the opposite border adjacent to them; e.g. gliders cross from the bottom of the grid to the top")
     parser.add_argument("--dimensions", "-d", dest = "dimensions", default = [50,100],type = int, nargs = 2, help = "set the dimensions (height width) of the grid (defaults to 50 x 100)")
     parser.add_argument("--stepwise", '-sw', dest = 'step', action = 'store_true', help = 'makes the grid update on keypress instead of at a time interval')
-    demoGroup = parser.add_mutually_exclusive_group()
-    demoGroup.add_argument('--random', '-r', dest='random', type = float, help = "set a proportion of the grid to randomly activate")
-    demoGroup.add_argument('--gliders', '-g', dest='gliders', action = 'store_true', help = 'generate some gliders at hard coded positions')
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument('--random', '-r', dest='random', type = float, help = "set a proportion of the grid to randomly activate")
+    modes.add_argument('--gliders', '-g', dest='gliders', action = 'store_true', help = 'generate some gliders at hard coded positions')
     args = parser.parse_args()
+
+    
     wrapper(main)
