@@ -2,13 +2,16 @@
 
 This is a basic exercise in the [Curses](https://docs.python.org/3/howto/curses.html) Python module, implementing Conway's Game of Life in a console display format.
 
-Currently includes functions to draw a random grid of active cells, and a drawGlider function with 4 direction options!
+Default launch mode is a randomized grid of live cells, use --draw/-d to draw a custom initial frame.
 
 Command line arguments:
 
+    Modes:
     --draw, -dr: initializes the grid in "draw" mode, allowing moving the cursor to set intial frame
     --glider, -g: places some gliders in hard coded positions
     --random, -r [float]: initializes the grid with [float] proportion of cells randomly active
+
+    Settings:
     --speed, -s [int]: sets refresh rate to [int]ms (default 75ms)
     --dimensions, -d [int] [int]: sets the height and width of the display grid; defaults to 50 x 100
     --wrap, -w: turns on edge-wrapping, so that cells on the border consider those on the opposite their neighbors
