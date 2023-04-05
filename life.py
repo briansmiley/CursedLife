@@ -95,6 +95,7 @@ def drawNoise(grid,density = .5):
 #Set a particular coordinate in the grid, default behavior to set to on
 def setCell(grid, coord, on = True):
     grid[coord[0]][coord[1]] = [0,1][on]
+
                 
 #set arbitrary list of cells to 1
 def setCells(grid, coordinates):
@@ -123,15 +124,87 @@ def drawGrid(grid,window):
                 window.addch(y,x,char)
             except:
                 pass
+def consoleWrite(win, text):
+    win.clear()
+    win.addstr(text)
+    win.refresh()
+
+def editGrid(grid, win):
+    h,w = grid.shape
+    y,x = h//2, w//2
+
+    #Line of instrucctions for drawing
+    instructions = curses.newwin(1,100 ,grid.shape[0] + 1, 0)
+    instructions.addstr(0,0,"Move cursor with arrow keys, Spacebar flips a cell, Enter starts the automaton")
+    instructions.refresh()
+    #"Console" window for displaying current Y, X coordinates of drawing cursor
+    console = curses.newwin(1,50,grid.shape[0]+2,0)
+
+
+    #Secondary console window for debug, displays last pressed key
+    # console2 = curses.newwin(2,50,grid.shape[0]+4,0)
     
+    while True:
+        #Prevent walking outside the grid
+        if y >= h:
+            y = h - 1
+        if y <= 0:
+            y = 0
+        if x >= w:
+            x = w - 1
+        if x <= 0:
+            x = 0
+
+        consoleWrite(console, f"Y: {y}, X: {x}")
+        drawGrid(grid, win)
+        win.move(y, x)
+        win.refresh()
+
+        key = win.getkey()
+
+        #Display pressed key
+        #consoleWrite(console2, f"{key}")
+
+        #Move cursor x/y on arrow keys
+        if key == "KEY_LEFT":
+            x -= 1
+        elif key == "KEY_RIGHT":
+            x += 1
+        elif key == "KEY_UP":
+            y -= 1
+        elif key == "KEY_DOWN":
+            y += 1
+
+        #Place a live cell on spacebar
+        elif key == " ":
+            setCell(grid, [y,x], not(grid[y,x]))
+
+        #Stop drawing on enter
+        elif key == "\n":
+            break
+
+    #close console/coordinate display when done drawing
+    instructions.clear()
+    instructions.refresh()
+    console.clear()
+    console.refresh()
+    #console2.clear()
+    #console2.refresh()
+
 def main(scr):
     h,w = tuple(args.dimensions)
     currentFrame = np.zeros((h,w),dtype=int)
 
+    
+    
     # draw a blank grid
     scr.clear()
     win = curses.newwin(h,w,1,1)
-    ##Sandbox adding stuff to the grid
+    win.keypad(True)
+    
+    
+    
+    ##Adding initial stuff to the grid
     if args.gliders:
         drawGlider(currentFrame,[2,2],1)
         drawGlider(currentFrame,[20,10])
@@ -140,6 +213,9 @@ def main(scr):
         drawGlider(currentFrame,[5,80],2)
         drawGlider(currentFrame,[1,50])
 
+    if args.draw:
+        editGrid(currentFrame, win)
+    
     if args.random:
         drawNoise(currentFrame, args.random)
     ## /Sandbox
@@ -173,6 +249,7 @@ if __name__ == "__main__":
 
     #Command line argument parsing
     parser = argparse.ArgumentParser(description="Generate a Game of Life Grid", formatter_class=argparse.MetavarTypeHelpFormatter)
+    parser.add_argument('--draw', '-dr', dest = 'draw', action = 'store_true', help = 'launch in drawing mode to create initial frame')
     parser.add_argument('--speed', '-s', dest = 'speed', type = int, default = 75, help = 'set frame refresh rate in ms (default 75)')
     parser.add_argument("--wrap", "-w", dest = "wrap", action = 'store_true', help = "'wrap' the grid such that cells at the border consider the opposite border adjacent to them; e.g. gliders cross from the bottom of the grid to the top")
     parser.add_argument("--dimensions", "-d", dest = "dimensions", default = [50,100],type = int, nargs = 2, help = "set the dimensions (height width) of the grid (defaults to 50 x 100)")
@@ -182,5 +259,5 @@ if __name__ == "__main__":
     modes.add_argument('--gliders', '-g', dest='gliders', action = 'store_true', help = 'generate some gliders at hard coded positions')
     args = parser.parse_args()
 
-    
+
     wrapper(main)
