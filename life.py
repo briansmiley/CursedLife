@@ -213,11 +213,16 @@ def main(scr):
         drawGlider(currentFrame,[5,80],2)
         drawGlider(currentFrame,[1,50])
 
-    if args.draw:
+    elif args.draw:
         editGrid(currentFrame, win)
     
-    if args.random:
+    elif args.random:
         drawNoise(currentFrame, args.random)
+
+    #if no modes/options are set, generate a random 40% active grid
+    else:
+        drawNoise(currentFrame, .4)
+        
     ## /Sandbox
 
     drawGrid(currentFrame, win)
@@ -249,13 +254,13 @@ if __name__ == "__main__":
 
     #Command line argument parsing
     parser = argparse.ArgumentParser(description="Generate a Game of Life Grid", formatter_class=argparse.MetavarTypeHelpFormatter)
-    parser.add_argument('--draw', '-dr', dest = 'draw', action = 'store_true', help = 'launch in drawing mode to create initial frame')
     parser.add_argument('--speed', '-s', dest = 'speed', type = int, default = 75, help = 'set frame refresh rate in ms (default 75)')
     parser.add_argument("--wrap", "-w", dest = "wrap", action = 'store_true', help = "'wrap' the grid such that cells at the border consider the opposite border adjacent to them; e.g. gliders cross from the bottom of the grid to the top")
     parser.add_argument("--dimensions", "-d", dest = "dimensions", default = [50,100],type = int, nargs = 2, help = "set the dimensions (height width) of the grid (defaults to 50 x 100)")
     parser.add_argument("--stepwise", '-sw', dest = 'step', action = 'store_true', help = 'makes the grid update on keypress instead of at a time interval')
     modes = parser.add_mutually_exclusive_group()
     modes.add_argument('--random', '-r', dest='random', type = float, help = "set a proportion of the grid to randomly activate")
+    modes.add_argument('--draw', '-dr', dest = 'draw', action = 'store_true', help = 'launch in drawing mode to create initial frame')
     modes.add_argument('--gliders', '-g', dest='gliders', action = 'store_true', help = 'generate some gliders at hard coded positions')
     args = parser.parse_args()
 
