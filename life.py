@@ -123,17 +123,57 @@ def drawGrid(grid,window):
                 window.addch(y,x,char)
             except:
                 pass
+def consoleWrite(win, text):
+    win.clear()
+    win.addstr(text)
+    win.refresh()
+def editGrid(grid, win):
+    y,x = grid.shape[0]//2,grid.shape[1]//2
+    console = curses.newwin(1,50,grid.shape[0]+2,0)
+    console2 = curses.newwin(1,50,grid.shape[0]+3,0)
+    while True:
+        consoleWrite(console, f"Console: Y: {y}, X: {x}")
+        drawGrid(grid, win)
+        win.move(y, x)
+        win.refresh()
 
-def drawGrid(grid, window):
-    pass
+        key = win.getch()
+
+        #For testing what key is being seen
+        consoleWrite(console2, f"{key}")
+
+        #Move cursor x/y on arrow keys
+        if key == curses.KEY_LEFT:
+            x -= 1
+        elif key == curses.KEY_RIGHT:
+            x += 1
+        elif key == curses.KEY_UP:
+            y -= 1
+        elif key == curses.KEY_DOWN:
+            y += 1
+
+        #Place a live cell on spacebar
+        elif key == ord(" "):
+            grid[y,x] = 1
+
+        #Stop drawing on enter
+        elif key == curses.KEY_ENTER:
+            break
+
 def main(scr):
     h,w = tuple(args.dimensions)
     currentFrame = np.zeros((h,w),dtype=int)
 
+    
+    
     # draw a blank grid
     scr.clear()
     win = curses.newwin(h,w,1,1)
-    ##Sandbox adding stuff to the grid
+    win.keypad(True)
+    
+    
+    
+    ##Adding initial stuff to the grid
     if args.gliders:
         drawGlider(currentFrame,[2,2],1)
         drawGlider(currentFrame,[20,10])
@@ -142,6 +182,9 @@ def main(scr):
         drawGlider(currentFrame,[5,80],2)
         drawGlider(currentFrame,[1,50])
 
+    if args.draw:
+        editGrid(currentFrame, win)
+    
     if args.random:
         drawNoise(currentFrame, args.random)
     ## /Sandbox
@@ -175,7 +218,7 @@ if __name__ == "__main__":
 
     #Command line argument parsing
     parser = argparse.ArgumentParser(description="Generate a Game of Life Grid", formatter_class=argparse.MetavarTypeHelpFormatter)
-    parser.add_argument('--draw', '-d', dest = 'draw', action = 'store_true', help = 'launch in drawing mode to create initial frame')
+    parser.add_argument('--draw', '-dr', dest = 'draw', action = 'store_true', help = 'launch in drawing mode to create initial frame')
     parser.add_argument('--speed', '-s', dest = 'speed', type = int, default = 75, help = 'set frame refresh rate in ms (default 75)')
     parser.add_argument("--wrap", "-w", dest = "wrap", action = 'store_true', help = "'wrap' the grid such that cells at the border consider the opposite border adjacent to them; e.g. gliders cross from the bottom of the grid to the top")
     parser.add_argument("--dimensions", "-d", dest = "dimensions", default = [50,100],type = int, nargs = 2, help = "set the dimensions (height width) of the grid (defaults to 50 x 100)")
