@@ -128,15 +128,21 @@ def consoleWrite(win, text):
     win.clear()
     win.addstr(text)
     win.refresh()
+
 def editGrid(grid, win):
     h,w = grid.shape
     y,x = h//2, w//2
 
+    #Line of instrucctions for drawing
+    instructions = curses.newwin(1,100 ,grid.shape[0] + 1, 0)
+    instructions.addstr(0,0,"Move cursor with arrow keys, Spacebar flips a cell, Enter starts the automaton")
+    instructions.refresh()
     #"Console" window for displaying current Y, X coordinates of drawing cursor
     console = curses.newwin(1,50,grid.shape[0]+2,0)
 
+
     #Secondary console window for debug, displays last pressed key
-    # console2 = curses.newwin(2,50,grid.shape[0]+3,0)
+    # console2 = curses.newwin(2,50,grid.shape[0]+4,0)
     
     while True:
         #Prevent walking outside the grid
@@ -178,6 +184,8 @@ def editGrid(grid, win):
             break
 
     #close console/coordinate display when done drawing
+    instructions.clear()
+    instructions.refresh()
     console.clear()
     console.refresh()
     #console2.clear()
