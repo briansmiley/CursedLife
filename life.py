@@ -228,9 +228,9 @@ def main(scr):
     drawGrid(currentFrame, win)
     win.refresh()
 
+    #hide the cursor while game is playing
+    curses.curs_set(0)
     while True:
-        #hide the cursor while game is playing
-        curses.curs_set(0)
 
         #Draw the current frame on the screen
         drawGrid(currentFrame,win)
