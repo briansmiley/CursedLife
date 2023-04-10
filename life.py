@@ -265,4 +265,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
 
-    wrapper(main)
+    try:
+        wrapper(main)
+    finally:
+        curses.echo()
+        curses.nocbreak()
+        curses.endwin()
