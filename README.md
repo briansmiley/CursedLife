@@ -2,7 +2,7 @@
 
 This is a basic exercise in the [Curses](https://docs.python.org/3/howto/curses.html) Python module, implementing Conway's Game of Life in a console display format.
 
-Default launch mode is a randomized grid of live cells, use --draw/-d to draw a custom initial frame.
+Default launch mode is draw mode.
 
 Command line arguments:
 
