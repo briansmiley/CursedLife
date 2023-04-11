@@ -84,6 +84,37 @@ def drawGlider(grid,coord,direction = 1):
         for pair in [[y,x],[y,x+1],[y,x+2],[y+1,x+2],[y+2,x+1]]:
             grid[pair[0]][pair[1]]=1
 
+#draw the spiral
+def drawSpiral(grid, coord):
+    setPath(grid, [
+        coord,
+        [coord[0] + 5, coord[1]],
+        [coord[0] + 5, coord[1]+8],
+        [coord[0] + 3, coord[1]+8],
+        [coord[0] + 3, coord[1]+4],
+    ])
+    setPath(grid, [
+        coord,
+        [coord[0] - 5, coord[1]],
+        [coord[0] - 5, coord[1]+8],
+        [coord[0] - 3, coord[1]+8],
+        [coord[0] - 3, coord[1]+4],
+    ])
+    setPath(grid, [
+        [coord[0] + 5, coord[1]],
+        [coord[0] + 5, coord[1]-8],
+        [coord[0] + 3, coord[1]-8],
+        [coord[0] + 3, coord[1]-4],
+    ])
+    setPath(grid, [
+        [coord[0] - 5, coord[1]],
+        [coord[0] - 5, coord[1] - 8],
+        [coord[0] - 3, coord[1] - 8],
+        [coord[0] - 3, coord[1] - 4],
+    ])
+
+
+
 #sets random cells all across the grid to positive, "density" sets the proportion of activated cells
 def drawNoise(grid,density = .5):
     h,w = grid.shape
@@ -96,11 +127,42 @@ def drawNoise(grid,density = .5):
 def setCell(grid, coord, on = True):
     grid[coord[0]][coord[1]] = [0,1][on]
 
+#set all cells between two points
+def setLine(grid, p1, p2, on = True):
+    setCells(grid,bresenham_line(p1, p2), on)
+
+#ChatGPT's Breseham Line algorithm, takes in poionts returns pixels between to draw a line
+def bresenham_line(p1, p2):
+    y1, x1, y2, x2 = p1[0], p1[1], p2[0], p2[1]
+    dx = abs(x2 - x1)
+    dy = abs(y2 - y1)
+    sx = 1 if x1 < x2 else -1
+    sy = 1 if y1 < y2 else -1
+    err = dx - dy
+    points = []
+
+    while x1 != x2 or y1 != y2:
+        points.append((y1, x1))
+        e2 = 2 * err
+        if e2 > -dy:
+            err -= dy
+            x1 += sx
+        if e2 < dx:
+            err += dx
+            y1 += sy
+
+    points.append((y1, x1))
+    return points
+
+#draw a series of lines connecting a series of points
+def setPath(grid, points, on = True):
+    for idx in range(1,len(points)):
+        setLine(grid, points[idx - 1], points[idx], on)
                 
 #set arbitrary list of cells to 1
-def setCells(grid, coordinates):
+def setCells(grid, coordinates, on = True):
     for coord in coordinates:
-        setCell(grid,coord)
+        setCell(grid,coord, on)
 
 def generate_next_grid(frame):
     nextFrame = np.empty_like(frame)
@@ -124,7 +186,7 @@ def drawGrid(grid,window):
                 window.addch(y,x,char)
             except:
                 pass
-def consoleWrite(win, text):
+def winWrite(win, text):
     win.clear()
     win.addstr(text)
     win.refresh()
@@ -155,7 +217,7 @@ def editGrid(grid, win):
         if x <= 0:
             x = 0
 
-        consoleWrite(console, f"Y: {y}, X: {x}")
+        winWrite(console, f"Y: {y}, X: {x}")
         drawGrid(grid, win)
         win.move(y, x)
         win.refresh()
@@ -163,7 +225,7 @@ def editGrid(grid, win):
         key = win.getkey()
 
         #Display pressed key
-        #consoleWrite(console2, f"{key}")
+        #winWrite(console2, f"{key}")
 
         #Move cursor x/y on arrow keys
         if key == "KEY_LEFT":
@@ -175,7 +237,7 @@ def editGrid(grid, win):
         elif key == "KEY_DOWN":
             y += 1
 
-        #Place a live cell on spacebar
+        #Swap the livelihood of cell on spacebar
         elif key == " ":
             setCell(grid, [y,x], not(grid[y,x]))
 
@@ -219,6 +281,8 @@ def main(scr):
     elif args.random:
         drawNoise(currentFrame, args.random)
 
+    elif args.spiral:
+        drawSpiral(currentFrame, [h//2,w//2])
     #if no modes/options are set, generate a random 40% active grid
     else:
         drawNoise(currentFrame, .4)
@@ -262,6 +326,7 @@ if __name__ == "__main__":
     modes.add_argument('--random', '-r', dest='random', type = float, help = "set a proportion of the grid to randomly activate")
     modes.add_argument('--draw', '-dr', dest = 'draw', action = 'store_true', help = 'launch in drawing mode to create initial frame')
     modes.add_argument('--gliders', '-g', dest='gliders', action = 'store_true', help = 'generate some gliders at hard coded positions')
+    modes.add_argument('--spiral', '-sp', dest='spiral', action = 'store_true', help = 'generate start with a symmetrical spiral')
     args = parser.parse_args()
 
 

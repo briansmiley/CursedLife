@@ -10,6 +10,7 @@ Command line arguments:
     --draw, -dr: initializes the grid in "draw" mode, allowing moving the cursor to set intial frame
     --glider, -g: places some gliders in hard coded positions
     --random, -r [float]: initializes the grid with [float] proportion of cells randomly active
+    --spiral, -sp: initializes grid with a symmetrical spiral shape
 
     Settings:
     --speed, -s [int]: sets refresh rate to [int]ms (default 75ms)
