@@ -88,29 +88,33 @@ def drawGlider(grid,coord,direction = 1):
 def drawSpiral(grid, coord):
     setPath(grid, [
         coord,
-        [coord[0] + 5, coord[1]],
-        [coord[0] + 5, coord[1]+8],
-        [coord[0] + 3, coord[1]+8],
+        [coord[0] + 7, coord[1]],
+        [coord[0] + 7, coord[1]+10],
+        [coord[0] + 3, coord[1]+10],
         [coord[0] + 3, coord[1]+4],
+        [coord[0] + 5, coord[1]+4],
     ])
     setPath(grid, [
         coord,
-        [coord[0] - 5, coord[1]],
-        [coord[0] - 5, coord[1]+8],
-        [coord[0] - 3, coord[1]+8],
+        [coord[0] - 7, coord[1]],
+        [coord[0] - 7, coord[1]+10],
+        [coord[0] - 3, coord[1]+10],
         [coord[0] - 3, coord[1]+4],
+        [coord[0] - 5, coord[1]+4],
     ])
     setPath(grid, [
-        [coord[0] + 5, coord[1]],
-        [coord[0] + 5, coord[1]-8],
-        [coord[0] + 3, coord[1]-8],
+        [coord[0] + 7, coord[1]],
+        [coord[0] + 7, coord[1]-10],
+        [coord[0] + 3, coord[1]-10],
         [coord[0] + 3, coord[1]-4],
+        [coord[0] + 5, coord[1]-4],
     ])
     setPath(grid, [
-        [coord[0] - 5, coord[1]],
-        [coord[0] - 5, coord[1] - 8],
-        [coord[0] - 3, coord[1] - 8],
+        [coord[0] - 7, coord[1]],
+        [coord[0] - 7, coord[1] - 10],
+        [coord[0] - 3, coord[1] - 10],
         [coord[0] - 3, coord[1] - 4],
+        [coord[0] - 5, coord[1] - 4],
     ])
 
 
