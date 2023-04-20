@@ -13,7 +13,7 @@ Command line arguments:
     --spiral, -sp: initializes grid with a symmetrical spiral shape
 
     Settings:
-    --speed, -s [int]: sets refresh rate to [int]ms (default 75ms)
+    --speed, -s [int]: sets refresh rate to [int]ms (default 50ms)
     --dimensions, -d [int] [int]: sets the height and width of the display grid; defaults to 50 x 100
     --wrap, -w: turns on edge-wrapping, so that cells on the border consider those on the opposite their neighbors
     --stepwise, -sw: makes the grid update only when on keypress (causes --speed to be ignored)
